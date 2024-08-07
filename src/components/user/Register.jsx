@@ -39,8 +39,8 @@ export const Register = () => {
 
             <div className="content__posts">
 
-                <strong className='alert alert-success'>{saved == 'saved' ? 'Ususario registado Correctamente' : ''}</strong>
-                <strong className='alert alert-danger'>{saved == 'error' ? 'Ususario no registado' : ''}</strong>
+                {saved == 'saved' ? <strong className='alert alert-success'>Ususario registado Correctamente </strong> : ''}
+                {saved == 'error' ? <strong className='alert alert-danger'>Ususario no registado </strong> : ''}
 
                 <form className='register-form' onSubmit={saveUser}>
 
