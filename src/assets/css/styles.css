@@ -177,11 +177,33 @@ body {
     font-size: 1.2rem;
     line-height: 1.5;
     cursor: pointer;
+
 }
 
 
 .content__button:hover,
 .content__btn-more-post:hover {
+    background-color: var(--color-background-btn-success-hover);
+    border-color: var(--color-border-btn-success-hover);
+}
+
+/* Asegúrate de que el botón tenga posición relativa y z-index alto */
+.btn.btn-success {
+    position: relative;
+    /* Asegura que el botón pueda ser posicionado con z-index */
+    z-index: 10;
+    /* Asegura que el botón esté por encima de otros elementos */
+    background-color: var(--color-background-btn-success);
+    color: var(--color-text-navbar) !important;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border-btn-success);
+    border-radius: 0.3rem;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.btn.btn-success:hover {
     background-color: var(--color-background-btn-success-hover);
     border-color: var(--color-border-btn-success-hover);
 }
@@ -388,7 +410,9 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 textarea {
+    position: relative;
     margin-bottom: 1rem;
+    z-index: 10;
 }
 
 .form-post__label,
