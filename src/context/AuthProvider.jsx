@@ -1,17 +1,59 @@
-//compartir una infromacion que tenemos de manera global, con el resto de los componentes
-import React, { useState, useEffect, createContext } from 'react'
+import React, { createContext, useEffect, useState } from 'react';
+import { Global } from '../helpers/Global';
 
-const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthContext = createContext();
 
-    const [compartido, setCompartido] = useState('Compartido con todos los componentes')
-    return (
-        <AuthContext.Provider
-            value={{ compartido }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+const AuthProvider = ({ children }) => {
 
-export default AuthContext;
+    const [auth, setAuth] = useState({});
+
+    useEffect(() => {
+        authUser();
+    }, []);
+
+    const authUser = async () => {
+        //sacar datos usuario identificado del localstorage
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+
+        //comprobar si tengo el token y el user
+        if (!token || !user) {
+            return false;
+        }
+
+        //transformar los datos a un objeto de javascript
+        const userObj = JSON.parse(user);
+        const userId = userObj._id;
+
+
+        //peticion ajax al backend que compruebe el token y que me devuelva todos los datos del usuario
+        const request = await fetch(Global.url + "user/profile/" + userId, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            }
+        });
+
+        const data = await request.json();
+
+        //setear el estado de auth
+        setAuth(data.user);
+
+    }
+
+
+    return (<AuthContext.Provider
+        value={{
+            auth,
+            setAuth
+        }}
+    >
+        {children}
+    </AuthContext.Provider>
+
+    );
+};
+
+export default AuthProvider

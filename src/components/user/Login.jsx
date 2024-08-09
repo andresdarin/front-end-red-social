@@ -10,33 +10,30 @@ export const Login = () => {
     const loginUser = async (e) => {
         e.preventDefault();
 
-        //Datos del formulario
+        // Datos del formulario
         let userToLogin = form;
 
-        //Peticion al backend 
+        // Petición al backend 
         const request = await fetch(Global.url + 'user/login', {
             method: 'POST',
             body: JSON.stringify(userToLogin),
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
+        });
 
         const data = await request.json();
 
-
         if (data.status === 'success') {
 
-            //Persistir los datos en el navegador
+            // Persistir los datos en el navegador
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
 
-
             setLoged('loged');
         } else {
-            setLoged('error')
+            setLoged('error');
         }
-
     }
 
     return (
