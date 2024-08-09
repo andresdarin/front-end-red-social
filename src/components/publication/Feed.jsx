@@ -4,7 +4,6 @@ import avatar from '../../assets/img/user.png'
 export const Feed = () => {
 
 
-    console.log(compartido)
     return (
         <section className="layout__content">
 
