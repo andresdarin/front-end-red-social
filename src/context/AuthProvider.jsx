@@ -64,6 +64,7 @@ const AuthProvider = ({ children }) => {
         value={{
             auth,
             setAuth,
+            setCounters,
             counters,
             loading
         }}
