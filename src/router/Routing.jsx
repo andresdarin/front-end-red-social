@@ -1,5 +1,5 @@
-import React from 'react'
-import { Routes, Route, BrowserRouter, Navigate, Link } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
 import { PublicLayout } from '../components/layout/public/PublicLayout';
 import { Login } from '../components/user/Login';
 import { Register } from '../components/user/Register';
@@ -7,6 +7,7 @@ import { PrivateLayout } from '../components/layout/private/PrivateLayout';
 import { Feed } from '../components/publication/Feed';
 import AuthProvider from '../context/AuthProvider';
 import { Logout } from '../components/user/Logout';
+import { People } from '../components/user/People';
 
 export const Routing = () => {
     return (
@@ -23,18 +24,17 @@ export const Routing = () => {
                         <Route index element={<Feed />} />
                         <Route path='feed' element={<Feed />} />
                         <Route path='logout' element={<Logout />} />
+                        <Route path='gente' element={<People />} />
                     </Route>
 
                     <Route path='*' element={
-
-                        <p>
+                        <div>
                             <h1>Error 404</h1>
-                            <Link to='/'> Volver al incio</Link>
-                        </p>
-
+                            <Link to='/'>Volver al inicio</Link>
+                        </div>
                     } />
                 </Routes>
             </AuthProvider>
         </BrowserRouter>
-    )
-}
+    );
+};

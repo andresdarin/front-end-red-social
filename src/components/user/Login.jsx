@@ -39,12 +39,6 @@ export const Login = () => {
             //Setear datos en el auth
             setAuth(data.user);
 
-            // Redireccion 
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-
-
         } else {
             setLoged('error');
         }

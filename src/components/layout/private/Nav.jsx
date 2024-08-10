@@ -8,31 +8,31 @@ export const Nav = () => {
 
             <ul className="container-lists__menu-list">
                 <li className="menu-list__item">
-                    <a href="#" className="menu-list__link">
+                    <NavLink to='/social' className="menu-list__link">
                         <i className="fa-solid fa-house"></i>
                         <span className="menu-list__title">Inicio</span>
-                    </a>
+                    </NavLink>
                 </li>
 
                 <li className="menu-list__item">
-                    <a href="#" className="menu-list__link">
+                    <NavLink to='/social/feed' className="menu-list__link">
                         <i className="fa-solid fa-list"></i>
                         <span className="menu-list__title">Timeline</span>
-                    </a>
+                    </NavLink>
                 </li>
 
                 <li className="menu-list__item">
-                    <a href="#" className="menu-list__link">
+                    <NavLink to='/social/gente' className="menu-list__link">
                         <i className="fa-solid fa-user"></i>
                         <span className="menu-list__title">Gente</span>
-                    </a>
+                    </NavLink>
                 </li>
 
                 <li className="menu-list__item">
-                    <a href="#" className="menu-list__link">
+                    <NavLink to='/social/feed' className="menu-list__link">
                         <i className="fa-regular fa-envelope"></i>
                         <span className="menu-list__title">Mensajes</span>
-                    </a>
+                    </NavLink>
                 </li>
             </ul>
 
@@ -50,7 +50,7 @@ export const Nav = () => {
                         <i className='fa-solid fa-gear' />
                         <span className="list-end__name">ajustes</span>
                     </a>
-                    <NavLink to='/social/logout' href="#" className="list-end__link">
+                    <NavLink to='/social/logout' className="list-end__link">
                         <i className='fa-solid fa-arrow-right-from-bracket' />
                         <span className="list-end__name">Cerrar Sesión</span>
                     </NavLink>
