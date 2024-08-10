@@ -8,6 +8,7 @@ const AuthProvider = ({ children }) => {
 
     const [auth, setAuth] = useState({});
     const [counters, setCounters] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         authUser();
@@ -20,6 +21,7 @@ const AuthProvider = ({ children }) => {
 
         //comprobar si tengo el token y el user
         if (!token || !user) {
+            setLoading(false)
             return false;
         }
 
@@ -53,6 +55,7 @@ const AuthProvider = ({ children }) => {
         //setear el estado de auth
         setAuth(data.user);
         setCounters(dataCounters)
+        setLoading(false)
 
     }
 
@@ -61,7 +64,8 @@ const AuthProvider = ({ children }) => {
         value={{
             auth,
             setAuth,
-            counters
+            counters,
+            loading
         }}
     >
         {children}
