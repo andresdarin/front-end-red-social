@@ -51,10 +51,10 @@ export const Nav = () => {
                     <a href="#" className="list-end__link">
                         <span className="list-end__name">{auth.name}</span>
                     </a>
-                    <a href="#" className="list-end__link">
+                    <NavLink to='/social/ajustes' className="list-end__link">
                         <i className='fa-solid fa-gear' />
-                        <span className="list-end__name">justes</span>
-                    </a>
+                        <span className="list-end__name">Ajustes</span>
+                    </NavLink>
                     <NavLink to='/social/logout' className="list-end__link">
                         <i className='fa-solid fa-arrow-right-from-bracket' />
                         <span className="list-end__name">Cerrar Sesión</span>
