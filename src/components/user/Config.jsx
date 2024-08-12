@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { Global } from '../../helpers/Global'
+import { SerializeForm } from '../../helpers/SerializeForm'
 
 export const Config = () => {
 
@@ -10,7 +11,14 @@ export const Config = () => {
     const updateUser = (e) => {
         e.preventDefault();
 
-        console.log(auth)
+        //recoger datos del formulario
+        let newDataUser = SerializeForm(e.target)
+
+        //borrar propiedad innecesaria
+        delete newDataUser.file0
+
+        //Actualizar usuario en la base de datos
+
     }
 
 
