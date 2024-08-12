@@ -5,20 +5,46 @@ import { SerializeForm } from '../../helpers/SerializeForm'
 
 export const Config = () => {
 
-    const { auth } = useAuth()
+    const { auth, setAuth } = useAuth()
     const [saved, setSaved] = useState('not_saved')
 
-    const updateUser = (e) => {
+    const updateUser = async (e) => {
         e.preventDefault();
 
-        //recoger datos del formulario
-        let newDataUser = SerializeForm(e.target)
+        // Recoger datos del formulario
+        let newDataUser = SerializeForm(e.target);
 
-        //borrar propiedad innecesaria
-        delete newDataUser.file0
+        // Borrar propiedad innecesaria
+        delete newDataUser.file0;
 
-        //Actualizar usuario en la base de datos
+        // Actualizar usuario en la base de datos
+        const request = await fetch(Global.url + "user/update", {
+            method: "PUT",
+            body: JSON.stringify(newDataUser),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem("token")
+            }
+        });
 
+        const data = await request.json();
+
+        if (data.status === "success") {
+            delete data.user.password;
+
+            // Actualizar localStorage si hay un nuevo token (ajustar si el backend envía un nuevo token)
+            // if (data.token) {
+            //     localStorage.setItem("token", data.token);
+            // }
+
+            // Actualizar auth en el estado
+            setAuth(data.user);
+            setSaved("saved");
+            console.log(auth)
+
+        } else {
+            setSaved("error");
+        }
     }
 
 
@@ -30,8 +56,8 @@ export const Config = () => {
 
             <div className="content__posts">
 
-                {saved == 'saved' ? <strong className='alert alert-success'>Ususario registado Correctamente </strong> : ''}
-                {saved == 'error' ? <strong className='alert alert-danger'>Ususario no registado </strong> : ''}
+                {saved == 'saved' ? <strong className='alert alert-success'>Ususario actualizado correctamente </strong> : ''}
+                {saved == 'error' ? <strong className='alert alert-danger'>Ususario no se ha actualizado </strong> : ''}
 
                 <form className='config-form' onSubmit={updateUser}>
 
@@ -41,11 +67,11 @@ export const Config = () => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="surname">Apellido</label>
-                        <input type="text" name='surname' defaultValue={auth.nick} />
+                        <input type="text" name='surname' defaultValue={auth.surname} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="nick">Nick</label>
-                        <input type="text" name='nick' defaultValue={auth.surname} />
+                        <input type="text" name='nick' defaultValue={auth.nick} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="bio">Bio</label>
