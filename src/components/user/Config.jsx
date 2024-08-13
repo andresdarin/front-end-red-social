@@ -11,6 +11,9 @@ export const Config = () => {
     const updateUser = async (e) => {
         e.preventDefault();
 
+        // Token de autenticación
+        const token = localStorage.getItem('token');
+
         // Recoger datos del formulario
         let newDataUser = SerializeForm(e.target);
 
@@ -23,29 +26,52 @@ export const Config = () => {
             body: JSON.stringify(newDataUser),
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Authorization": token
             }
         });
 
         const data = await request.json();
 
-        if (data.status === "success") {
+        if (data.status === "success" && data.user) {
             delete data.user.password;
-
-            // Actualizar localStorage si hay un nuevo token (ajustar si el backend envía un nuevo token)
-            // if (data.token) {
-            //     localStorage.setItem("token", data.token);
-            // }
 
             // Actualizar auth en el estado
             setAuth(data.user);
             setSaved("saved");
-            console.log(auth)
-
+            console.log(auth);
         } else {
             setSaved("error");
         }
+
+        // Subida de imágenes
+        const fileInput = document.querySelector('#file');
+
+        if (data.status == 'success' && fileInput.files[0]) {
+            // Recoger imagen o fichero a subir
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            // Petición para enviar la imagen o el fichero al backend y que lo guarde finalmente
+            const uploadRequest = await fetch(Global.url + 'user/upload', {
+                method: 'POST',
+                body: formData, // Cambiado de JSON.stringify(userToLogin) a formData
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            const uploadData = await uploadRequest.json();
+
+            if (uploadData.status == 'success' && data.user) {
+                // Actualizar auth en el estado con la respuesta de la carga de imagen
+                setAuth(uploadData.user); // Ajustado para que utilice el dato correcto
+                setSaved('saved');
+            } else {
+                setSaved('error')
+            }
+        }
     }
+
 
 
     return (
@@ -85,7 +111,7 @@ export const Config = () => {
                         <label htmlFor="password">Contraseña</label>
                         <input type="password" name='password' />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group btn-img">
                         <label htmlFor="image">Avatar</label>
                         <div className="general-info__container-avatar">
                             {auth.image != 'default.png' && <img src={Global.url + 'user/avatar/' + auth.image} className="container-avatar__img" alt="Foto de perfil" />}

@@ -208,6 +208,10 @@ body {
     border-color: var(--color-border-btn-success-hover);
 }
 
+.btn-img {
+    position: relative;
+}
+
 
 .content__posts {
     width: 100%;
