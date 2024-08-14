@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
-import { UserListt } from './UserListt';
+import { UserListt } from '../user/UserListt';
+import { useParams } from 'react-router-dom';
 
-export const People = () => {
+export const Following = () => {
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(1);
-    const [more, setMore] = useState(true)
-    const [following, setFollowing] = useState([])
+    const [more, setMore] = useState(true);
+    const [following, setFollowing] = useState([]);
     const [loading, setLoading] = useState(false); // Estado para manejar carga
 
+    const params = useParams();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -20,8 +22,10 @@ export const People = () => {
 
         setLoading(true);
 
+        const userId = params.userId;
+
         try {
-            const request = await fetch(Global.url + 'user/list/' + page, {
+            const request = await fetch(Global.url + 'follow/following/' + userId + '/' + page, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -29,33 +33,44 @@ export const People = () => {
                 }
             });
 
-            const data = await request.json();
-
-            //if de clase optimizado
-            if (data.users && data.status === 'success') {
-                let newUsers = [...users, ...data.users]; // Agrega nuevos usuarios a la lista existente
-                setUsers(newUsers);
-                setFollowing(data.user_following)
+            if (!request.ok) {
+                throw new Error(`HTTP error! status: ${request.status}`);
             }
 
-            if (users.length >= (data.total - data.users.length)) {
-                setMore(false)
+            const data = await request.json();
+
+
+            let cleanUsers = []
+            //recorrer y limpiar follows para quedarme con followed
+            if (Array.isArray(data.follow)) {
+                cleanUsers = data.follow.map(follow => follow.followed);
+            }
+
+            data.users = cleanUsers
+
+            console.log('Clean Users:', cleanUsers);
+
+            if (data.users && data.status === 'success') {
+                const newUsers = [...users, ...data.users]; // Agrega nuevos usuarios a la lista existente
+                setUsers(newUsers);
+                setFollowing(data.user_following);
+
+                if (newUsers.length >= data.total) {
+                    setMore(false);
+                }
+
             }
         } catch (error) {
             console.error('Error fetching users:', error);
         } finally {
             setLoading(false);
         }
-    }
-
-
-
-
+    };
 
     return (
         <section className="layout__content">
             <header className="content__header">
-                <h1 className="content__title">Gente</h1>
+                <h1 className="content__title">Usuarios que sigue NOMBRE USUARIO</h1>
             </header>
 
             <UserListt
@@ -67,12 +82,7 @@ export const People = () => {
                 setPage={setPage}
                 more={more}
                 loading={loading}
-
-            /*props sacadas del api*/
-
             />
-
-
         </section>
-    )
-}
+    );
+};

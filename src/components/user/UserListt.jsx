@@ -10,10 +10,6 @@ export const UserListt = ({ users, getUsers, following, setFollowing, page, setP
 
 
 
-    const nextPage = () => {
-        setPage(prevPage => prevPage + 1); // Incrementa la página
-    }
-
     const follow = async (userId) => {
         //Peticion al backend para guardar el follow
         const request = await fetch(Global.url + 'follow/save', {
@@ -57,6 +53,10 @@ export const UserListt = ({ users, getUsers, following, setFollowing, page, setP
 
 
     }
+    const nextPage = () => {
+        setPage(prevPage => prevPage + 1); // Incrementa la página
+    }
+
     return (
         <>
             <div className="content__posts">

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
-import { UserListt } from './UserListt';
+import { UserListt } from '../user/UserListt';
 
-export const People = () => {
+export const Followers = () => {
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(1);
     const [more, setMore] = useState(true)
@@ -67,7 +67,6 @@ export const People = () => {
                 setPage={setPage}
                 more={more}
                 loading={loading}
-
             /*props sacadas del api*/
 
             />
