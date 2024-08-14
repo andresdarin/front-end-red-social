@@ -274,12 +274,17 @@ body {
 }
 
 .post__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: var(--color-text-navbar);
     padding: 1rem 1.5rem;
-    font-size: 1.4rem;
+    margin: 1rem 1.5rem;
+    font-size: 1.5rem;
     border-radius: 0.4rem;
     background-color: var(--color-background-btn-delete);
     border-color: var(--color-border-btn-delete);
+    position: relative;
 }
 
 
