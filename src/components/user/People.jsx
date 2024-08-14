@@ -5,6 +5,7 @@ import { Global } from '../../helpers/Global';
 export const People = () => {
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(1);
+    const [more, setMore] = useState(true)
     const [loading, setLoading] = useState(false); // Estado para manejar carga
 
     const token = localStorage.getItem('token');
@@ -33,6 +34,10 @@ export const People = () => {
             if (data.users && data.status === 'success') {
                 let newUsers = [...users, ...data.users]; // Agrega nuevos usuarios a la lista existente
                 setUsers(newUsers);
+            }
+
+            if (users.length >= (data.total - data.users.length)) {
+                setMore(false)
             }
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -78,12 +83,14 @@ export const People = () => {
                     </article>
                 ))}
             </div>
+            {more &&
+                <div className="content__container-btn">
+                    <button className="content__btn-more-post" onClick={nextPage} disabled={loading}>
+                        {loading ? 'Cargando...' : 'Ver más personas'}
+                    </button>
+                </div>
+            }
 
-            <div className="content__container-btn">
-                <button className="content__btn-more-post" onClick={nextPage} disabled={loading}>
-                    {loading ? 'Cargando...' : 'Ver más personas'}
-                </button>
-            </div>
         </section>
     )
 }
