@@ -8,7 +8,6 @@ export const UserListt = ({ users, getUsers, following, setFollowing, page, setP
     const token = localStorage.getItem('token');
 
     const follow = async (userId) => {
-        // Petición al backend para guardar el follow
         const request = await fetch(Global.url + 'follow/save', {
             method: 'POST',
             body: JSON.stringify({ followed: userId }),
@@ -20,15 +19,12 @@ export const UserListt = ({ users, getUsers, following, setFollowing, page, setP
 
         const data = await request.json();
 
-        // Cuando esté todo correcto
         if (data.status === 'success') {
-            // Actualizar estado del following agregando el nuevo follow
             setFollowing([...following, userId]);
         }
     };
 
     const unfollow = async (userId) => {
-        // Petición al backend para borrar el follow
         const request = await fetch(Global.url + 'follow/unfollow/' + userId, {
             method: 'DELETE',
             headers: {
@@ -39,23 +35,26 @@ export const UserListt = ({ users, getUsers, following, setFollowing, page, setP
 
         const data = await request.json();
 
-        // Cuando esté todo correcto
         if (data.status === 'success') {
-            // Actualizar estado del following filtrando los datos para eliminar el antiguo user id que acabo de dejar de seguir
             const filterFollowings = following.filter(followingUserId => userId !== followingUserId);
             setFollowing(filterFollowings);
         }
     };
 
     const nextPage = () => {
-        setPage(prevPage => prevPage + 1); // Incrementa la página
+        setPage(prevPage => prevPage + 1);
     };
+
+    const uniqueUsers = Array.from(new Set(users.map(user => user._id)))
+        .map(id => {
+            return users.find(user => user._id === id)
+        });
 
     return (
         <>
             <div className="content__posts">
-                {users.map(user => (
-                    <article className="posts__post" key={user._id}>
+                {uniqueUsers.map((user, index) => (
+                    <article className="posts__post" key={`${user._id}-${index}`}>
                         <div className="post__container">
                             <div className="post__image-user">
                                 <a href="#" className="post__image-link">

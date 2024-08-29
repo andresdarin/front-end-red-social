@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
 import { UserListt } from '../user/UserListt';
 import { useParams } from 'react-router-dom';
+import { GetProfile } from '../../helpers/GetProfile';
 
 export const Followers = () => {
     const [users, setUsers] = useState([]);
@@ -9,12 +10,14 @@ export const Followers = () => {
     const [more, setMore] = useState(true);
     const [following, setFollowing] = useState([]);
     const [loading, setLoading] = useState(false); // Estado para manejar carga
+    const [userProfile, setUserProfile] = useState({})
 
     const params = useParams();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
         getUsers();
+        GetProfile(params.userId, setUserProfile)
     }, [page]); // Ejecuta `getUsers` cada vez que `page` cambie
 
     const getUsers = async () => {
@@ -70,7 +73,7 @@ export const Followers = () => {
     return (
         <section className="layout__content">
             <header className="content__header">
-                <h1 className="content__title">Seguidores de NOMBRE USUARIO</h1>
+                <h1 className="content__title">Seguidores de {userProfile.name} {userProfile.surname}</h1>
             </header>
 
             <UserListt

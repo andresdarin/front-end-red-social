@@ -73,7 +73,7 @@ export const Sidebar = () => {
                 const formData = new FormData();
                 formData.append('image', fileInput.files[0]);
 
-                const uploadRequest = await fetch(Global.url + 'publication/upload/' + data.publicationStored, {
+                const uploadRequest = await fetch(Global.url + 'publication/upload/' + data.publicationStored._id, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -82,7 +82,6 @@ export const Sidebar = () => {
                 });
 
                 const uploadData = await uploadRequest.json();
-                console.log(uploadData)
                 if (uploadData.status === 'success') {
                     setStored('stored');
                 } else {
@@ -90,11 +89,19 @@ export const Sidebar = () => {
                     setStored('error');
                 }
             }
+
+            if (data.status === 'success' && (!fileInput.files[0] || uploadData.status === 'success')) {
+                const myForm = document.querySelector('#publication-form');
+                if (myForm) {
+                    myForm.reset();
+                }
+            }
         } else {
             console.error("Error al guardar la publicación:", data.message);
             setStored('error');
         }
     };
+
 
 
     return (
@@ -146,7 +153,7 @@ export const Sidebar = () => {
                     {stored === 'stored' && <strong className="alert alert-success">Publicada correctamente</strong>}
                     {stored === 'error' && <strong className="alert alert-danger">No se ha publicado nada</strong>}
 
-                    <form className="container-form__form-post" onSubmit={savePublication}>
+                    <form id='publication-form' className="container-form__form-post" onSubmit={savePublication}>
                         <div className="form-post__inputs">
                             <label htmlFor="text" className="form-post__label">¿Qué estás pensando hoy?</label>
                             <textarea name="text" className="form-post__textarea" onChange={changed} />
