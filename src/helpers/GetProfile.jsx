@@ -24,4 +24,6 @@ export const GetProfile = async (userId, setState) => {
     } catch (error) {
         console.error('Error fetching profile:', error);
     }
+
+    return data;
 };
