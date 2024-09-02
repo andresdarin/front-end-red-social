@@ -12,11 +12,13 @@ export const Profile = () => {
     const [iFollow, setIFollow] = useState(false);
     const params = useParams();
     const token = localStorage.getItem('token');
+    const [publication, setPublication] = useState()
 
     useEffect(() => {
         const fetchData = async () => {
             await getCounters();
             await getDataUser();
+            await getPublication()
         };
         fetchData();
     }, [params.userId]);
@@ -27,13 +29,16 @@ export const Profile = () => {
             console.log('DataUser:', dataUser);
 
             // Asegúrate de que followInfo es un array de strings
-            const isFollowing = dataUser.followInfo.includes(String(auth._id));
-            setIFollow(isFollowing);
-            console.log('Is Following:', isFollowing);
+            if (Array.isArray(dataUser.followInfo)) {
+                const isFollowing = dataUser.followInfo.includes(String(auth._id));
+                setIFollow(isFollowing);
+                console.log('Is Following:', isFollowing);
+            }
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
     };
+
 
     useEffect(() => {
         console.log('iFollow:', iFollow);
@@ -88,6 +93,22 @@ export const Profile = () => {
             console.error('Unfollow failed:', data);
         }
     };
+
+    const getPublication = async (nextPage = 1) => {
+        const request = await fetch(Global.url + 'publication/user/' + params.userId + '/' + nextPage, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const data = await request.json();
+
+        if (data.status == 'success') {
+            setPublication(data.publications)
+        }
+    }
 
     return (
         <section className="layout__content">

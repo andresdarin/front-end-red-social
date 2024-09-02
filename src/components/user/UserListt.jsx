@@ -4,7 +4,7 @@ import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 
-export const UserListt = ({ users, following, setFollowing, setPage, more, loading }) => {
+export const UserListt = ({ users, getUsers, following, setFollowing, page, setPage, more, loading }) => {
     const { auth } = useAuth();
     const token = localStorage.getItem('token');
 
@@ -46,10 +46,15 @@ export const UserListt = ({ users, following, setFollowing, setPage, more, loadi
         setPage(prevPage => prevPage + 1);
     };
 
-    const uniqueUsers = Array.from(new Set(users.map(user => user._id)))
+
+
+    const uniqueUsers = Array.from(new Set(users.filter(user => user).map(user => user._id)))
         .map(id => {
-            return users.find(user => user._id === id)
+            return users.find(user => user && user._id === id);
         });
+
+
+
 
     return (
         <>
