@@ -4,7 +4,7 @@ import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 
-export const UserListt = ({ users, getUsers, following, setFollowing, page, setPage, more, loading }) => {
+export const UserListt = ({ users, following, setFollowing, setPage, more, loading }) => {
     const { auth } = useAuth();
     const token = localStorage.getItem('token');
 

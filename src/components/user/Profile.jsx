@@ -1,50 +1,97 @@
-import React, { useEffect, useState } from 'react'
-import avatar from '../../assets/img/user.png'
-import { GetProfile } from '../../helpers/GetProfile'
-import { Link, useParams } from 'react-router-dom'
-import { Global } from '../../helpers/Global'
-import useAuth from '../../hooks/useAuth'
+import React, { useEffect, useState } from 'react';
+import avatar from '../../assets/img/user.png';
+import { GetProfile } from '../../helpers/GetProfile';
+import { Link, useParams } from 'react-router-dom';
+import { Global } from '../../helpers/Global';
+import useAuth from '../../hooks/useAuth';
 
 export const Profile = () => {
     const { auth } = useAuth();
-    const [user, setUser] = useState({})
-    const [counters, setCounters] = useState({})
+    const [user, setUser] = useState({});
+    const [counters, setCounters] = useState({});
+    const [iFollow, setIFollow] = useState(false);
     const params = useParams();
-
-    const token = localStorage.getItem('token')
-
-    useEffect(() => {
-        GetProfile(params.userId, setUser)
-        getCounters();
-    }, [])
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        GetProfile(params.userId, setUser)
-        getCounters();
-    }, [params])
+        const fetchData = async () => {
+            await getCounters();
+            await getDataUser();
+        };
+        fetchData();
+    }, [params.userId]);
 
+    const getDataUser = async () => {
+        try {
+            let dataUser = await GetProfile(params.userId, setUser);
+            console.log('DataUser:', dataUser);
+
+            // Asegúrate de que followInfo es un array de strings
+            const isFollowing = dataUser.followInfo.includes(String(auth._id));
+            setIFollow(isFollowing);
+            console.log('Is Following:', isFollowing);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
+    useEffect(() => {
+        console.log('iFollow:', iFollow);
+    }, [iFollow]);
 
     const getCounters = async () => {
         const request = await fetch(Global.url + 'user/counters/' + params.userId, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application.json',
+                'Content-Type': 'application/json',
                 'Authorization': token
             }
-        })
-
+        });
         const data = await request.json();
 
         if (data.following) {
-            setCounters(data)
+            setCounters(data);
         }
-    }
+    };
+
+    const follow = async (userId) => {
+        const request = await fetch(Global.url + 'follow/save', {
+            method: 'POST',
+            body: JSON.stringify({ followed: userId }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        });
+
+        const data = await request.json();
+
+        if (data.status === 'success') {
+            setIFollow(true);
+        }
+    };
+
+    const unfollow = async (userId) => {
+        const request = await fetch(Global.url + 'follow/unfollow/' + userId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        });
+
+        const data = await request.json();
+
+        if (data.status === 'success') {
+            setIFollow(false);
+        } else {
+            console.error('Unfollow failed:', data);
+        }
+    };
 
     return (
         <section className="layout__content">
-
             <header className="aside__profile-info">
-
                 <div className="profile-info__general-info">
                     <div className="general-info__container-avatar">
                         {user.image !== 'default.png' ? (
@@ -58,21 +105,23 @@ export const Profile = () => {
                         <div className="container-names__header">
                             <h1>{user.name} {user.surname}</h1>
 
-                            {user._id != auth._id && <button className="content__button content__button-right">Seguir</button>}
-
+                            {user._id !== auth._id && (
+                                iFollow ?
+                                    <button className="content__button content__button-right post__button" onClick={() => unfollow(user._id)}>Dejar de Seguir</button>
+                                    :
+                                    <button className="content__button content__button-right" onClick={() => follow(user._id)}>Seguir</button>
+                            )}
                         </div>
                         <h2 className="container-names__nickname">{user.nick}</h2>
                         <p>Biografía</p>
                     </div>
                 </div>
 
-
                 <div className="profile-info__stats">
-
                     <div className="stats__following">
                         <Link to={'/social/siguiendo/' + user._id} className="following__link">
                             <span className="following__title">Siguiendo</span>
-                            <span className="following__number">{counters.following >= 1 ? counters.followed : 0}</span>
+                            <span className="following__number">{counters.following >= 1 ? counters.following : 0}</span>
                         </Link>
                     </div>
                     <div className="stats__following">
@@ -82,27 +131,18 @@ export const Profile = () => {
                         </Link>
                     </div>
 
-
                     <div className="stats__following">
                         <Link to={'/social/perfil/' + user._id} className="following__link">
                             <span className="following__title">Publicaciones</span>
                             <span className="following__number">{counters.publications >= 1 ? counters.publications : 0}</span>
                         </Link>
                     </div>
-
-
                 </div>
             </header>
 
-
-
-
             <div className="content__posts">
-
                 <article className="posts__post">
-
                     <div className="post__container">
-
                         <div className="post__image-user">
                             <a href="#" className="post__image-link">
                                 <img src={avatar} className="post__user-image" alt="Foto de perfil" />
@@ -110,41 +150,28 @@ export const Profile = () => {
                         </div>
 
                         <div className="post__body">
-
                             <div className="post__user-info">
                                 <a href="#" className="user-info__name">Andres Darin</a>
                                 <span className="user-info__divider"> | </span>
                                 <a href="#" className="user-info__create-date">Hace 1 hora</a>
                             </div>
-
-                            <h4 className="post__content">Hola, buenos dias.</h4>
-
+                            <h4 className="post__content">Hola, buenos días.</h4>
                         </div>
-
                     </div>
 
-
                     <div className="post__buttons">
-
                         <a href="#" className="post__button">
                             <i className="fa-solid fa-trash-can"></i>
                         </a>
-
                     </div>
-
                 </article>
-
-
-
-
 
                 <div className="content__container-btn">
                     <button className="content__btn-more-post">
-                        Ver mas publicaciones
+                        Ver más publicaciones
                     </button>
                 </div>
             </div>
-
         </section>
-    )
-}
+    );
+};
