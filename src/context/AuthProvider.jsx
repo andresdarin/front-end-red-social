@@ -7,7 +7,11 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
 
     const [auth, setAuth] = useState({});
-    const [counters, setCounters] = useState({});
+    const [counters, setCounters] = useState({
+        following: 0,
+        followed: 0,
+        publications: 0,
+    });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -51,6 +55,8 @@ const AuthProvider = ({ children }) => {
         });
 
         const dataCounters = await requestCounters.json();
+        console.log(dataCounters); // Añade este log para verificar la respuesta de la API
+
 
         //setear el estado de auth
         setAuth(data.user);
