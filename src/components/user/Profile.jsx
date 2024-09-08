@@ -19,6 +19,7 @@ export const Profile = () => {
         const fetchData = async () => {
             await getCounters();
             await getDataUser();
+            setMore(true);
             await getPublication(1, true);
         };
         fetchData();
@@ -113,9 +114,16 @@ export const Profile = () => {
                 newPublications = [...publication, ...data.publications];
             }
 
+            if (newProfile) {
+                newPublications = data.publications
+                setMore(true)
+                setPage(1)
+
+            }
+
             setPublication(newPublications);
 
-            if (data.publications.length < 5) {
+            if (!newProfile && data.publications.length < 5) {
                 setMore(false);
             }
         } else {
