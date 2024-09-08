@@ -4,12 +4,13 @@ import { GetProfile } from '../../helpers/GetProfile';
 import { Link, useParams } from 'react-router-dom';
 import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
+import { PublicationList } from '../publication/PublicationList';
 
 export const Profile = () => {
     const [user, setUser] = useState({});
     const { auth, counters, setCounters } = useAuth();
     const [iFollow, setIFollow] = useState(false);
-    const [publication, setPublication] = useState([]);
+    const [publications, setPublications] = useState([]);
     const [page, setPage] = useState(1);
     const [more, setMore] = useState(true);
     const params = useParams();
@@ -110,31 +111,28 @@ export const Profile = () => {
         if (data.status === 'success') {
             let newPublications = data.publications;
 
-            if (!newProfile && publication.length >= 1) {
-                newPublications = [...publication, ...data.publications];
+            if (!newProfile && publications.length >= 1) {
+                newPublications = [...publications, ...data.publications];
             }
 
             if (newProfile) {
-                newPublications = data.publications
-                setMore(true)
-                setPage(1)
-
+                newPublications = data.publications;
+                setMore(true);
+                setPage(1);
             }
 
-            setPublication(newPublications);
+            setPublications(newPublications);
 
             if (!newProfile && data.publications.length < 5) {
+                setMore(false);
+            }
+
+            if (data.pages <= 1) {
                 setMore(false);
             }
         } else {
             setMore(false);
         }
-    };
-
-    const nextPage = () => {
-        let next = page + 1;
-        setPage(next);
-        getPublication(next);
     };
 
     return (
@@ -188,44 +186,15 @@ export const Profile = () => {
                 </div>
             </header>
 
-            <div className="content__posts">
-                {publication.length > 0 ? (
-                    publication.map((pub, index) => (
-                        <article className="posts__post" key={index}>
-                            <div className="post__container">
-                                <div className="post__image-user">
-                                    <Link to={`/social/perfil/${pub.user._id}`} className="post__image-link">
-                                        <img src={pub.user.image && pub.user.image !== 'default.png' ? `${Global.url}user/avatar/${pub.user.image}` : avatar} className="post__user-image" alt="Foto de perfil" />
-                                    </Link>
-                                </div>
-
-                                <div className="post__body">
-                                    <div className="post__user-info">
-                                        <a href="#" className="user-info__name">{pub.user.name} {pub.user.surname}</a>
-                                        <span className="user-info__divider"> | </span>
-                                        <a href="#" className="user-info__create-date">{pub.created_at}</a>
-                                    </div>
-                                    <h4 className="post__content">{pub.text}</h4>
-                                </div>
-                            </div>
-
-                            {auth._id === pub.user._id &&
-                                <div className="post__buttons">
-                                    <a href="#" className="post__button">Eliminar</a>
-                                </div>
-                            }
-                        </article>
-                    ))
-                ) : (
-                    <p>No hay publicaciones para mostrar.</p>
-                )}
-
-                {more && (
-                    <div className="content__container-btn">
-                        <button className="content__btn-more-post" onClick={nextPage}>Ver más publicaciones</button>
-                    </div>
-                )}
-            </div>
+            <PublicationList
+                publications={publications}
+                setPublications={setPublications}
+                getPublications={getPublication}
+                page={page}
+                setPage={setPage}
+                more={more}
+                setMore={setMore}
+            />
         </section>
     );
 };
