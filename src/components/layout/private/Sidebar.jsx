@@ -90,16 +90,18 @@ export const Sidebar = () => {
                 }
             }
 
-            if (data.status === 'success' && (!fileInput.files[0] || uploadData.status === 'success')) {
-                const myForm = document.querySelector('#publication-form');
-                if (myForm) {
-                    myForm.reset();
-                }
-            }
+
         } else {
             console.error("Error al guardar la publicación:", data.message);
             setStored('error');
         }
+
+        //if (data.status === 'success' && (!fileInput.files[0] || uploadData.status === 'success')) {
+        const myForm = document.querySelector('#publication-form');
+        if (myForm) {
+            myForm.reset();
+        }
+        //}
     };
 
 

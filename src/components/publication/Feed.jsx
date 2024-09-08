@@ -14,7 +14,7 @@ export const Feed = () => {
     useEffect(() => {
         const fetchData = async () => {
             setMore(true);
-            await getPublication(1, flase);
+            await getPublication(1, false);
         };
         fetchData();
     }, []);

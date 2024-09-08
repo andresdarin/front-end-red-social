@@ -3,6 +3,7 @@ import avatar from '../../assets/img/user.png';
 import { Link } from 'react-router-dom';
 import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
+import ReactTimeAgo from 'react-time-ago';
 
 export const PublicationList = ({ publications, setPublications, getPublications, page, setPage, more, setMore }) => { // Añadido getPublications aquí
     const { auth } = useAuth();
@@ -52,7 +53,7 @@ export const PublicationList = ({ publications, setPublications, getPublications
                                     <div className="post__user-info">
                                         <a href="#" className="user-info__name">{pub.user.name} {pub.user.surname}</a>
                                         <span className="user-info__divider"> | </span>
-                                        <a href="#" className="user-info__create-date">{pub.created_at}</a>
+                                        <a href="#" className="user-info__create-date"><ReactTimeAgo date={pub.created_at} locale='es-ES' /></a>
                                     </div>
                                     <h4 className="post__content">{pub.text}</h4>
 
